@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Builder
 public class TelefoneDto implements Serializable {
 
-    String numero;
-    String ddd;
+    private Long id;
+    private String numero;
+    private String ddd;
 }

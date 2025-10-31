@@ -21,7 +21,7 @@ public class Endereco {
     @Column(name = "numero")
     private String numero;
 
-    @Column(name = "complemento", length = 10)
+    @Column(name = "complemento", length = 150)
     private String complemento;
 
     @Column(name = "cidade", length = 150)
