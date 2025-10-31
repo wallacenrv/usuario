@@ -48,5 +48,11 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
+    // alterar dados de usuario
+    // Quando eu quero pegar o usuario pelo token, tenho que colocar esse RequestHeader
+    @PutMapping()
+    public ResponseEntity<UsuarioDto> atualizarDadosUsuario(@RequestHeader("Authorization") String token, @RequestBody UsuarioDto usuarioDto){
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(token, usuarioDto));
+    }
 
 }
