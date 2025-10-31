@@ -18,11 +18,34 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
 
     @PostMapping()
     public ResponseEntity<UsuarioDto> salvarUsuario(@RequestBody UsuarioDto usuarioDto){
         return ResponseEntity.ok(usuarioService.salvarUsuario(usuarioDto));
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody UsuarioDto usuarioDto){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(usuarioDto.getEmail(), usuarioDto.getSenha())
+        );
+        return "Bearer " + jwtUtil.generateToken(authentication.getName());
+
+    }
+
+    @GetMapping()
+    public ResponseEntity<Usuario> buscaUsuarioPorEmail(@RequestParam ("email")String email){
+        Usuario usurio = usuarioService.buscarUsuarioPorEmail(email);
+        return ResponseEntity.ok(usurio);
+    }
+
+    @DeleteMapping("{email}")
+    public ResponseEntity<Void> deletarUsuarioPorEmail(@PathVariable String email){
+        usuarioService.deletarUsuarioPorEmail(email);
+        return ResponseEntity.ok().build();
     }
 
 
