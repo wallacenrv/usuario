@@ -11,10 +11,11 @@ import java.io.Serializable;
 @Builder
 public class EnderecoDto implements Serializable {
 
-    String rua;
-    String numero;
-    String complemento;
-    String cidade;
-    String estado;
-    String cep;
+    private Long id;
+    private String rua;
+    private String numero;
+    private String complemento;
+    private String cidade;
+    private String estado;
+    private String cep;
 }

@@ -1,6 +1,8 @@
 package com.wallacen.usuario.business.controller;
 
 
+import com.wallacen.usuario.business.dtos.EnderecoDto;
+import com.wallacen.usuario.business.dtos.TelefoneDto;
 import com.wallacen.usuario.business.dtos.UsuarioDto;
 import com.wallacen.usuario.infrastructure.entity.Usuario;
 import com.wallacen.usuario.infrastructure.security.JwtUtil;
@@ -37,9 +39,9 @@ public class UsuarioController {
     }
 
     @GetMapping()
-    public ResponseEntity<Usuario> buscaUsuarioPorEmail(@RequestParam ("email")String email){
-        Usuario usurio = usuarioService.buscarUsuarioPorEmail(email);
-        return ResponseEntity.ok(usurio);
+    public ResponseEntity<UsuarioDto> buscaUsuarioPorEmail(@RequestParam ("email")String email){
+        UsuarioDto usuario = usuarioService.buscarUsuarioPorEmail(email);
+        return ResponseEntity.ok(usuario);
     }
 
     @DeleteMapping("{email}")
@@ -48,5 +50,23 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
+    // alterar dados de usuario
+    // Quando eu quero pegar o usuario pelo token, tenho que colocar esse RequestHeader
+    @PutMapping()
+    public ResponseEntity<UsuarioDto> atualizarDadosUsuario(@RequestHeader("Authorization") String token, @RequestBody UsuarioDto usuarioDto){
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(token, usuarioDto));
+    }
+
+    @PutMapping("/endereco")
+    public ResponseEntity<EnderecoDto> atualizarEndereco(@RequestParam("id") Long idEndereco,
+                                                         @RequestBody EnderecoDto enderecoDto){
+        return ResponseEntity.ok(usuarioService.atualizarEndereco(idEndereco, enderecoDto));
+    }
+
+    @PutMapping("/telefone")
+    public ResponseEntity<TelefoneDto> atualizarTelefone(@RequestParam ("id") Long idTelefone,
+                                                         @RequestBody TelefoneDto telefoneDto){
+        return ResponseEntity.ok(usuarioService.atualizarTelefone(idTelefone, telefoneDto));
+    }
 
 }
