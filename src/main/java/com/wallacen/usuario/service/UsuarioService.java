@@ -14,8 +14,6 @@ import com.wallacen.usuario.infrastructure.repository.TelefoneRepository;
 import com.wallacen.usuario.infrastructure.repository.UsuarioRepository;
 import com.wallacen.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +57,7 @@ public class UsuarioService {
         try {
             Usuario usuarioAtual = usuarioRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email não encontrado" + email));
             return usuarioConverter.paraUsuarioDto(usuarioAtual);
-        }catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("Email nao encontrado " + e.getMessage());
         }
     }
@@ -102,6 +100,23 @@ public class UsuarioService {
         telefoneRepository.save(telefoneNovo);
         return usuarioConverter.paraTelefoneDto(telefoneNovo);
 
+    }
+
+    public EnderecoDto cadastraEndereco(String token, EnderecoDto enderecoDto) {
+        String email = jwtUtil.extractUsername(token.substring(7));
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("usuario nao encontrado"));
+
+        Endereco endereco = usuarioConverter.paraEndereco(enderecoDto, usuario.getId());
+        enderecoRepository.save(usuarioConverter.paraEndereco(enderecoDto));
+        return enderecoDto;
+    }
+
+    public TelefoneDto cadastraTelefone(String token, TelefoneDto telefoneDto) {
+        String email = jwtUtil.extractUsername(token.substring(7));
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("usuario nao encontrado"));
+        usuarioConverter.paraTelefone(telefoneDto, usuario.getId());
+        telefoneRepository.save(usuarioConverter.paraTelefone(telefoneDto));
+        return telefoneDto;
     }
 
 
