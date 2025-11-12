@@ -39,7 +39,7 @@ public class UsuarioController {
     }
 
     @GetMapping()
-    public ResponseEntity<UsuarioDto> buscaUsuarioPorEmail(@RequestParam ("email")String email){
+    public ResponseEntity<UsuarioDto> buscaUsuarioPorEmail(@RequestParam ("email")String email,@RequestHeader("Authorization") String token){
         UsuarioDto usuario = usuarioService.buscarUsuarioPorEmail(email);
         return ResponseEntity.ok(usuario);
     }
