@@ -1,0 +1,29 @@
+# Etapa de construção (Build Phase)
+# Usa a imagem base do Gradle com o JDK 17 para construir o projeto
+FROM gradle:7.5-jdk17 AS build
+
+# Define o diretório de trabalho dentro do container como /app
+WORKDIR /app
+
+# Copia o conteúdo do diretório local para o container no diretório /app
+COPY . .
+
+# Executa o comando Gradle para compilar o projeto. A flag --no-daemon faz com que o Gradle execute sem rodar o daemon em segundo plano, garantindo que o processo seja isolado.
+RUN gradle build --no-daemon
+
+# Etapa final (Final Image Phase)
+# Usa uma imagem base do OpenJDK 17 com Alpine Linux (imagem mais enxuta para a execução)
+FROM openjdk:17-jdk-alpine
+
+# Define novamente o diretório de trabalho dentro da imagem final
+WORKDIR /app
+
+# Copia o arquivo .jar gerado pela etapa de construção para o diretório /app da imagem final
+COPY --from=build /app/build/libs/*.jar /app/usuario.jar
+
+# Expõe a porta 8080 no container, permitindo acesso externo à aplicação
+EXPOSE 8080
+
+# Define o comando que será executado quando o container for iniciado:
+# Executa o arquivo .jar utilizando o comando java -jar
+CMD ["java", "-jar", "/app/usuario.jar"]
