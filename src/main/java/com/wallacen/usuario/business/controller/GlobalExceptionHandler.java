@@ -1,6 +1,7 @@
 package com.wallacen.usuario.business.controller;
 
 import com.wallacen.usuario.infrastructure.exception.ConflictException;
+import com.wallacen.usuario.infrastructure.exception.IllegalArgumentsException;
 import com.wallacen.usuario.infrastructure.exception.ResourceNotFoundException;
 import com.wallacen.usuario.infrastructure.exception.UnauthorizedException;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
@@ -28,6 +29,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> handleConflictException(UnauthorizedException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(IllegalArgumentsException.class)
+    public ResponseEntity<String> handleConflictException(IllegalArgumentsException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
 

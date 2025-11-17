@@ -2,11 +2,14 @@ package com.wallacen.usuario.business.controller;
 
 
 import com.wallacen.usuario.business.dtos.EnderecoDto;
+import com.wallacen.usuario.business.dtos.ResponseCepDto;
 import com.wallacen.usuario.business.dtos.TelefoneDto;
 import com.wallacen.usuario.business.dtos.UsuarioDto;
 import com.wallacen.usuario.infrastructure.entity.Usuario;
 import com.wallacen.usuario.infrastructure.security.JwtUtil;
+import com.wallacen.usuario.infrastructure.security.SecurityConfig;
 import com.wallacen.usuario.service.UsuarioService;
+import com.wallacen.usuario.service.ViaCepService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +30,13 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final ViaCepService viaCepService;
 
+
+    @GetMapping("/endereco/{cep}")
+    public ResponseEntity<ResponseCepDto> buscarDadosCep(@PathVariable("cep") String cep){
+        return ResponseEntity.ok(viaCepService.buscarCep(cep));
+    }
 
     @PostMapping()
     public ResponseEntity<UsuarioDto> salvarUsuario(@RequestBody UsuarioDto usuarioDto){
