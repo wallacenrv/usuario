@@ -24,6 +24,12 @@ repositories {
     mavenCentral()
 }
 
+
+//alinha a versao de todas as dpeneicas
+ext {
+    set('springCloudVersion', "2025.0.0")
+}
+
 dependencies {
     // Spring Boot Starters
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -46,11 +52,23 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
+    //openfeign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
     // Testes
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+
+// ele alinha as versoes do spring cloud, coloca todos na mesma versao
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()
