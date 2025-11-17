@@ -7,6 +7,8 @@ import com.wallacen.usuario.business.dtos.UsuarioDto;
 import com.wallacen.usuario.infrastructure.entity.Usuario;
 import com.wallacen.usuario.infrastructure.security.JwtUtil;
 import com.wallacen.usuario.service.UsuarioService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/usuario")
 @RequiredArgsConstructor
+@Tag(name="Usuario", description = "cadastro e login e usuarios")
+@SecurityRequirement(name = SecurityConfig.SECURITY_SCHEMA)
+
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
