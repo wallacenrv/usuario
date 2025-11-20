@@ -9,11 +9,17 @@ import com.wallacen.usuario.infrastructure.entity.Telefone;
 import com.wallacen.usuario.infrastructure.entity.Usuario;
 import com.wallacen.usuario.infrastructure.exception.ConflictException;
 import com.wallacen.usuario.infrastructure.exception.ResourceNotFoundException;
+import com.wallacen.usuario.infrastructure.exception.UnauthorizedException;
 import com.wallacen.usuario.infrastructure.repository.EnderecoRepository;
 import com.wallacen.usuario.infrastructure.repository.TelefoneRepository;
 import com.wallacen.usuario.infrastructure.repository.UsuarioRepository;
 import com.wallacen.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +33,8 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final TelefoneRepository telefoneRepository;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+
 
     public UsuarioDto salvarUsuario(UsuarioDto usuarioDto) {
         emailExiste(usuarioDto.getEmail());
@@ -35,6 +43,19 @@ public class UsuarioService {
         Usuario usuario = usuarioConverter.paraUsuario(usuarioDto);
         usuario = usuarioRepository.save(usuario);
         return usuarioConverter.paraUsuarioDto(usuario);
+    }
+
+    public String autenticarUsuario(UsuarioDto usuarioDto) {
+
+       try {
+           Authentication authentication = authenticationManager.authenticate(
+                   new UsernamePasswordAuthenticationToken(usuarioDto.getEmail(), usuarioDto.getSenha())
+           );
+           return "Bearer " + jwtUtil.generateToken(authentication.getName());
+       }catch (BadCredentialsException | CredentialsExpiredException | InternalAuthenticationServiceException |
+               UsernameNotFoundException e ) {
+           throw new UnauthorizedException("Usuario ou senha invalidos" + e.getMessage());
+       }
     }
 
     public void emailExiste(String email) {
