@@ -28,8 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+   private final JwtUtil jwtUtil;
     private final ViaCepService viaCepService;
 
 
@@ -44,12 +43,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UsuarioDto usuarioDto){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(usuarioDto.getEmail(), usuarioDto.getSenha())
-        );
-        return "Bearer " + jwtUtil.generateToken(authentication.getName());
-
+    public ResponseEntity<String> login(@RequestBody UsuarioDto usuarioDto){
+       return ResponseEntity.ok(usuarioService.autenticarUsuario(usuarioDto));
     }
 
     @GetMapping()
